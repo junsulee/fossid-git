@@ -1,5 +1,5 @@
 #! /bin/bash
-# FossID GIT Integration Script v0.9 (beta)
+# FossID GIT Integration Script v0.9.1 (beta)
 # ----------------------------------------
 # Copyright (c) 2020 OSBC / junsulee
 # jslee@osbc.co.kr
@@ -23,9 +23,9 @@ id=$2
 key=$3
 pname=$4
 sname=$5
-path=$6
-git_url=$7
-git_branch=$8
+git_url=$6
+git_branch=$7
+path=$8
 
 print_usage() {
 	echo "Usage: please use appropriate params. see README.md"
@@ -54,7 +54,7 @@ EOF
 
 create_project
 
-if [ -z "$git_url" ];
+if [ $# > 7 ];
 then
 	create_scan
 else
@@ -67,7 +67,6 @@ fi
 run_scan
 
 scan_finished=$(get_scan_status)
-echo $scan_finished
 while [ ${scan_finished} -eq 0 ]; do
 	echo "Scanning... $(get_scan_progress)"
 	scan_finished=$(get_scan_status)
@@ -95,7 +94,7 @@ function create_project()
 }
 EOT
 )" \
-	$url | jq "."
+	$url | jq 'if .error != null then "(WARN) " + .error elif .message != null then "(INFO) " + .message else .error , .message end' -r
 }
 
 function create_scan()
@@ -110,7 +109,7 @@ function create_scan()
 }
 EOT
 )" \
-	$url | jq "."
+	$url | jq 'if .error != null then "(WARN) " + .error elif .message != null then "(INFO) " + .message else .error , .message end' -r
 }
 
 function create_scan_from_git() {
@@ -124,7 +123,7 @@ function create_scan_from_git() {
 }
 EOT
 )" \
-	$url | jq "."
+	$url | jq 'if .error != null then "(WARN) " + .error elif .message != null then "(INFO) " + .message else .error , .message end' -r
 }
 
 function download_from_git() {
@@ -139,7 +138,7 @@ function download_from_git() {
 
 EOT
 )" \
-	$url | jq "."
+	$url | jq 'if .error != null then "(WARN) " + .error elif .message != null then "(INFO) " + .message else .error , .message end' -r
 }
 
 function run_scan() {
@@ -152,7 +151,7 @@ function run_scan() {
 }
 EOT
 )" \
-	$url | jq "."
+	$url | jq 'if .error != null then "(WARN) " + .error elif .message != null then "(INFO) " + .message else .error , .message end' -r
 }
 
 function get_scan_status() {
