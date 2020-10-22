@@ -3,7 +3,7 @@
 ##### A lightweight script that helps to integrate the FossID with various git-based CI/CD environments.
 
 ## Prerequisites
-- install jq package (https://stedolan.github.io/jq/)
+- install jq package (https://stedolan.github.io/jq/) - Licensed under MIT License
 > sudo apt-get install jq
 
 > yum install jq
