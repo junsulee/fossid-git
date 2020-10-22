@@ -2,9 +2,9 @@
 
 # FossID GIT Integration Script v0.9 (beta)
 # ----------------------------------------
-# Copyright (c) 2020 OSBC
+# Copyright (c) 2020 OSBC / junsulee
 # jslee@osbc.co.kr
-# Licensed under GPL v2+
+# Licensed under GPLv2+
 # ----------------------------------------
 
 url=$1
