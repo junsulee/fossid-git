@@ -139,7 +139,6 @@ $url | jq '.data | .is_finished' -r
 return
 }
 
-
 function get_scan_progress() {
 curl -s POST \
 -H "Content-Type: application/json" \
