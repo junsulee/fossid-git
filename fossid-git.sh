@@ -1,28 +1,11 @@
 #! /bin/bash
 
-# FossID GIT Integration Script v1.0
+# FossID GIT Integration Script v0.9 (beta)
+# ----------------------------------------
 # Copyright (c) 2020 OSBC
 # jslee@osbc.co.kr
 # Licensed under GPL v2+
-
-# Release Note
-# =====
-# v0.1
-# Initial release
-# v0.2
-# Structural improvement
-# v0.3
-# Improvement using jq
-# v0.4
-# Structural improvement
-# v0.5
-# Structural improvement
-# v0.6
-# create child scan if project already exists
-# v0.7
-# added support for git repository scanning
-# v0.8
-# added feature: check scan progress
+# ----------------------------------------
 
 url=$1
 id=$2
@@ -39,24 +22,16 @@ print_usage() {
 }
 
 function main() {
-	result=$(\
-		curl -s POST \
-		-d '{"group": "projects", "action": "list_projects", "data": {"username": "$id", "key": "$key"}}' \
-		-H "Content-Type: application/json" $url | jq '.data[] | select(.project_name == "") | .id' \
-	)
-
-	if [ -z "$result" ];
-	then
-		create_project
-	fi
+	create_project
 
 	if [ -z "$git_url" ];
 	then
 		create_scan
 	else
-		echo "create scan from git..."
+		echo "Create scan from git..."
 		create_scan_from_git
 		download_from_git
+		echo "Download finished."
 	fi
 
 	run_scan
@@ -72,7 +47,11 @@ function main() {
 		fi
 	done
 
+	echo -e "----------\n"
+	get_finished_information
+	echo "----------"
 	echo "Finished."
+
 }
 
 function create_project()
@@ -115,7 +94,7 @@ curl -s POST \
 }
 EOT
 )" \
-$url -v | jq "."
+$url | jq "."
 }
 
 function download_from_git() {
@@ -130,7 +109,7 @@ curl -X POST \
 
 EOT
 )" \
-$url -v | jq "."
+$url | jq "."
 }
 
 function run_scan() {
@@ -156,7 +135,7 @@ curl -s POST \
 }
 EOT
 )" \
-$url -s | jq '.data | .is_finished' -r
+$url | jq '.data | .is_finished' -r
 return
 }
 
@@ -171,8 +150,26 @@ curl -s POST \
 }
 EOT
 )" \
-$url -s | jq '.data | .percentage_done' -r
+$url | jq '.data | .percentage_done' -r
 return
 }
 
-main
+function get_finished_information() {
+curl -s POST \
+-H "Content-Type: application/json" \
+-d "$(cat <<EOT
+{
+"group": "scans", "action": "get_scan_log",
+"data": {"username": "$id", "key": "$key", "scan_code": "$sname"}
+}
+EOT
+)" \
+$url | jq '.data[0] | .date + "\n" + .action + "\n" + .reference + "\n" + .description + "\n" + .comment' -r
+return
+}
+
+if [ $# -eq 0 ]; then
+    print_usage
+else
+	main
+fi
