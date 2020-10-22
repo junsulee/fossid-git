@@ -1,5 +1,6 @@
 # fossid-git
-FossID GIT Integration Script (Beta)
+### FossID GIT Integration Script (Beta)
+#### A lightweight script that helps to integrate the FossID with various git-based CI/CD environments.
 
 ## Prerequisites
 - install jq package (https://stedolan.github.io/jq/)
@@ -11,6 +12,8 @@ FossID GIT Integration Script (Beta)
 > ex) ./fossid-git.sh https://yourfossidurl/webapp/api.php username userapikey projectname scanname - giturl gitbranchname
 
 ## Release Note
+### v0.9.1
+- output message handling improvement and bug fixed
 ### v0.9
 - bug fixed / added feature: print scan info when finished
 ### v0.8
@@ -20,12 +23,12 @@ FossID GIT Integration Script (Beta)
 ### v0.6
 - create child scan if project already exists
 ### v0.5
-- Structural improvement
+- structural improvement
 ### v0.4
-- Structural improvement
+- structural improvement
 ### v0.3
-- Improvement using jq
+- improvement using jq
 ### v0.2
-- Structural improvement
+- structural improvement
 ### v0.1
-- Initial release
+- initial release
