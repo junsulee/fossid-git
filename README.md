@@ -4,9 +4,11 @@
 
 ## Prerequisites
 - install jq package (https://stedolan.github.io/jq/) - Licensed under MIT License
-> sudo apt-get install jq
 
-> yum install jq
+```bash
+sudo apt-get install jq
+yum install jq
+```
 
 ## Usage
 > ex) ./fossid-git.sh https://yourfossidurl/webapp/api.php username userapikey projectname scanname giturl gitbranchname path*
