@@ -33,3 +33,7 @@
 - structural improvement
 ### v0.1
 - initial release
+
+## License
+
+[GNU General Public License v2.0 or later](https://tldrlegal.com/license/gnu-general-public-license-v2)
