@@ -12,7 +12,9 @@ yum install jq
 ```
 
 ## Usage
-> ex) ./fossid-git.sh https://yourfossidurl/webapp/api.php username userapikey projectname scanname giturl gitbranchname path*
+```bash
+./fossid-git.sh https://yourfossidurl/webapp/api.php username userapikey projectname scanname giturl gitbranchname path*
+```
 *(Optional) path is an optional parameter that allows you to scan the code of a specific path in the FossID server's file system.
 
 ## Release Note
