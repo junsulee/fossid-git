@@ -13,9 +13,13 @@ yum install jq
 
 ## Usage
 ```bash
-./fossid-git.sh https://yourfossidurl/webapp/api.php username userapikey projectname scanname giturl gitbranchname path*
+./fossid-git.sh --fossid.scheme=https --fossid.host=fossid.mycompany.com --fossid.username=myuser \
+--fossid.apikey=abcdefgh --fossid.project.name=myproject --fossid.scan.name=myscan \
+--fossid.git.url=https://github.com/mycompany/myproject --fossid.git.branch=master
 ```
-*(Optional) path is an optional parameter that allows you to scan the code of a specific path in the FossID server's file system.
+Example of --fossid.git.url for private repository: git@bitbucket.org:mycompany/myproject.git
+Example of --fossid.git.url for public repository: https://github.com/mycompany/myproject.git
+*(Optional) --fossid.filesystem.path is an optional parameter that allows you to scan the code of a specific path in the FossID server's file system.
 
 ## Release Note
 ### v0.9.1
