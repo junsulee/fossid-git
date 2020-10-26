@@ -3,6 +3,7 @@
 ##### A lightweight script that helps to integrate the FossID with various git-based CI/CD environments.
 
 ## Prerequisites
+- FossID 2020.
 - install jq package (https://stedolan.github.io/jq/)
 
 ```bash
