@@ -40,5 +40,4 @@ yum install jq
 - initial release
 
 ## License
-
-[GNU General Public License v2.0 or later](https://tldrlegal.com/license/gnu-general-public-license-v2)
+This project is licensed under the terms of the [GNU General Public License v2.0 or later](https://tldrlegal.com/license/gnu-general-public-license-v2)
