@@ -7,7 +7,9 @@
 - install jq package (https://stedolan.github.io/jq/)
 
 ```bash
+(debian/ubuntu)
 sudo apt-get install jq
+(redhat/centos)
 yum install jq
 ```
 
