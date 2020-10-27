@@ -1,5 +1,5 @@
 # fossid-git
-### FossID GIT Integration Script (Beta)
+### FossID GIT Integration Script v0.9.3 (Beta)
 ##### A lightweight script that helps to integrate the FossID with various git-based CI/CD environments.
 
 ## Prerequisites
@@ -24,6 +24,8 @@ yum install jq
 - *(Optional) --fossid.filesystem.path is an optional parameter that allows you to scan the code of a specific path in the FossID server's file system.
 
 ## Release Note
+### v0.9.3
+- support for trust certificate option, help menu added
 ### v0.9.2
 - structural improvement and bug fixed
 ### v0.9.1
