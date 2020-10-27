@@ -1,5 +1,5 @@
 #! /bin/bash
-# FossID GIT Integration Script v0.9.2 (beta)
+# FossID GIT Integration Script v0.9.3 (beta)
 # ----------------------------------------
 # Copyright (c) 2020 OSBC / junsulee
 # jslee@osbc.co.kr
@@ -17,6 +17,8 @@
 # You should have received a copy of the GNU General Public License
 # along with this program; if not, write to the Free Software
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
+
+version="v0.9.3 (beta)"
 
 function main() {
 	cat << "EOF"
@@ -43,29 +45,29 @@ ys        `ohy/.`    .:ohy.  -ossssso/` :ossssso:   .++`  -+++++//:.
                           .ohddh+                                     
                             `+hho                                     
 
-
-FossID GIT Integration v0.9.2 (beta)
-
------
+================================================================================
 EOF
+display_version
+echo
 echo "FossID API Endpoint: ${url}"
 echo "username: ${username}"
 echo "Project Name: ${pname}"
 echo "Scan Name: ${sname}"
 echo "Git URL: ${git_url}"
 echo "Git branch: ${git_branch}"
-echo "Target Path (Filesystem): ${path}"
-echo "-----"
+echo "*Target Path (Filesystem): ${path}"
+echo "*Trust all certificates: ${trustcert}"
+echo "================================================================================"
 
 create_project
 
 if [[ ! -z ${git_url} ]]; then
-	echo "Create scan from git..."
+	echo "(INFO) Create scan from git..."
 	create_scan_from_git
 	download_from_git
-	echo "Download finished."
+	echo "(INFO) Download finished."
 else
-	echo "Create scan from local filesystem..."
+	echo "(INFO) Create scan from local filesystem..."
 	create_scan
 fi
 run_scan
@@ -80,21 +82,21 @@ while [ ${scan_finished} -eq 0 ]; do
 	fi
 done
 
-echo -e "----------\n"
+echo -e "--------------------------------------------------------------------------------\n"
 get_finished_information
-echo "----------"
-echo "Finished."
+echo "--------------------------------------------------------------------------------"
+echo "(INFO) Finished."
 
 }
 
 function create_project()
 {
-	curl -s POST \
+	curl --connect-timeout ${timeout} -s${secureoption} POST \
 		-H "Content-Type: application/json" \
 		-d "$(cat <<EOT
 {
 "group": "projects", "action": "create", 
-"data": {"username": "$username", "key": "$key", "project_code": "$pname", "project_name": "$pname"}
+"data": {"username": "$username", "key": "$key", "project_code": "$pname", "project_name": "$pname", "description": "Created by FossID Git Integration Script"}
 }
 EOT
 )" \
@@ -103,7 +105,7 @@ EOT
 
 function create_scan()
 {
-	curl -s POST \
+	curl --connect-timeout ${timeout} -s${secureoption} POST \
 		-H "Content-Type: application/json" \
 		-d "$(cat <<EOT
 {
@@ -117,7 +119,7 @@ EOT
 }
 
 function create_scan_from_git() {
-	curl -s POST \
+	curl --connect-timeout ${timeout} -s${secureoption} POST \
 		-H "Content-Type: application/json" \
 		-d "$(cat <<EOT
 {
@@ -131,7 +133,7 @@ EOT
 }
 
 function download_from_git() {
-	curl -X POST \
+	curl --connect-timeout ${timeout} -${secureoption}X POST \
 		-H "Content-Type: application/json" \
 		-d "$(cat <<EOT
 
@@ -146,7 +148,7 @@ EOT
 }
 
 function run_scan() {
-	curl -s POST \
+	curl --connect-timeout ${timeout} -s${secureoption} POST \
 		-H "Content-Type: application/json" \
 		-d "$(cat <<EOT
 {
@@ -159,7 +161,7 @@ EOT
 }
 
 function get_scan_status() {
-	curl -s POST \
+	curl --connect-timeout ${timeout} -s${secureoption} POST \
 		-H "Content-Type: application/json" \
 		-d "$(cat <<EOT
 {
@@ -173,7 +175,7 @@ EOT
 }
 
 function get_scan_progress() {
-	curl -s POST \
+	curl --connect-timeout ${timeout} -s${secureoption} POST \
 		-H "Content-Type: application/json" \
 		-d "$(cat <<EOT
 {
@@ -187,7 +189,7 @@ EOT
 }
 
 function get_finished_information() {
-	curl -s POST \
+	curl --connect-timeout ${timeout} -s${secureoption} POST \
 		-H "Content-Type: application/json" \
 		-d "$(cat <<EOT
 {
@@ -200,50 +202,97 @@ EOT
 	return
 }
 
-print_usage() {
-	echo "Usage: please use appropriate or required params. see README.md"
-	exit 2
+display_version() {
+	echo "FossID GIT Integration Script version ${version}"
 }
 
-if [ $# -lt 7 ]; then
-	print_usage
+display_help() {
+    echo "Usage: $0 [option...]=" >&2
+    echo
+    echo "	[!] At least 7 (or 8) properties are required depending on the option."
+    echo
+    echo "	--fossid.scheme				: (Required) http or https"
+    echo "	--fossid.host				: (Required) hostname of FossID webserver"
+    echo "	--fossid.username			: (Required) FossID username"
+    echo "	--fossid.apikey				: (Required) FossID apikey"
+    echo "	--fossid.project.name			: (Required) name for the FossID project"
+    echo "	--fossid.scan.name			: (Required) name for the FossID scan"
+    echo "	--fossid.git.url 			: git repository url"
+    echo "	--fossid.git.branch 			: branch name of git repository"
+    echo "	--fossid.filesystem.path 		: (Optional) specific path in the FossID server's file system for scanning."
+    echo "	--fossid.trust.cert 			: (Advanced) Trust self-signed certificates (true/false)"
+    echo "	--fossid.timeout 			: (Advanced) set operation timeout"
+    echo
+    exit 0
+}
+
+if [ $# -gt 1 ] && [ $# -lt 7 ]; then
+	display_help
 else
+	timeout=0
 	while [ $# -gt 0 ];
-		do
-			case "$1" in
-				--fossid.scheme=*)
+	do
+		case "$1" in
+			--fossid.scheme=*)
 				scheme="${1#*=}"
 				;;
-				--fossid.host=*)
+			--fossid.host=*)
 				host="${1#*=}"
 				;;
-				--fossid.username=*)
+			--fossid.username=*)
 				username="${1#*=}"
 				;;
-				--fossid.apikey=*)
+			--fossid.apikey=*)
 				key="${1#*=}"
 				;;
-				--fossid.project.name=*)
+			--fossid.project.name=*)
 				pname="${1#*=}"
 				;;
-				--fossid.scan.name=*)
+			--fossid.scan.name=*)
 				sname="${1#*=}"
 				;;
-				--fossid.git.url=*)
+			--fossid.git.url=*)
 				git_url="${1#*=}"
 				;;
-				--fossid.git.branch=*)
+			--fossid.git.branch=*)
 				git_branch="${1#*=}"
 				;;
-				--fossid.filesystem.path=*)
+			--fossid.filesystem.path=*)
 				path="${1#*=}"
 				;;
-				*)
-			esac
+			--fossid.trust.cert=*)
+				if [ "${1#*=}" = true ]; then
+					trustcert="true"
+					secureoption="k"
+				else
+					trustcert="false"
+					secureoption=""
+				fi
+				;;
+			--fossid.timeout=*)
+				if [ -n "${1#*=}" ]; then
+					timeout="${1#*=}"
+				fi
+				;;
+			-h | --help)
+				display_help
+				;;
+			-v | --version)
+				display_version
+				echo "https://github.com/junsulee/fossid-git"
+				exit 0
+				;;
+			-* | --*)
+				echo "Error: Unknown option"
+				exit 1
+				;;
+			*)
+				break
+				display_help
+				;;
+		esac
 		shift
 	done
 fi
-
 url="${scheme}""://""${host}""/webapp/api.php"
-
 main
