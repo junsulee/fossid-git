@@ -24,7 +24,7 @@ yum install jq
 - *(Optional) --fossid.filesystem.path is an optional parameter that allows you to scan the code of a specific path in the FossID server's file system.
 
 ## Properties
-```bash
+```
 --fossid.scheme				: (Required) http or https"
 --fossid.host				: (Required) hostname of FossID webserver"
 --fossid.username			: (Required) FossID username"
