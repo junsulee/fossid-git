@@ -1,6 +1,6 @@
 # fossid-git
 ### FossID GIT Integration Script v0.9.3 (Beta)
-##### A lightweight script that helps to integrate the FossID with various git-based CI/CD environments.
+A lightweight script that helps to integrate the FossID with various git-based CI/CD environments.
 
 ## Prerequisites
 - Install FossID 2020.x or higher
