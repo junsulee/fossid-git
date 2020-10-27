@@ -23,6 +23,20 @@ yum install jq
 - Example of --fossid.git.url for public repository: https://github.com/mycompany/myproject.git
 - *(Optional) --fossid.filesystem.path is an optional parameter that allows you to scan the code of a specific path in the FossID server's file system.
 
+## Properties
+```bash
+--fossid.scheme				: (Required) http or https"
+--fossid.host				: (Required) hostname of FossID webserver"
+--fossid.username			: (Required) FossID username"
+--fossid.apikey				: (Required) FossID apikey"
+--fossid.project.name			: (Required) name for the FossID project"
+--fossid.scan.name			: (Required) name for the FossID scan"
+--fossid.git.url 			: git repository url"
+--fossid.git.branch 			: branch name of git repository"
+--fossid.filesystem.path 		: (Optional) specific path in the FossID server's file system for scanning."
+--fossid.trust.cert 			: (Advanced) Trust self-signed certificates (true/false)"
+--fossid.timeout 			: (Advanced) set operation timeout"
+```
 ## Release Note
 ### v0.9.3
 - support for trust certificate option, help menu added
