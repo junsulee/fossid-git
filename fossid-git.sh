@@ -1,5 +1,5 @@
 #! /bin/bash
-# FossID GIT Integration Script v0.9.3 (beta)
+# FossID GIT Integration Script
 # ----------------------------------------
 # Copyright (c) 2020 OSBC / junsulee
 # jslee@osbc.co.kr
@@ -18,39 +18,14 @@
 # along with this program; if not, write to the Free Software
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 
-version="v0.9.3 (beta)"
+version="v0.9.4 (beta)"
 
 function main() {
-	cat << "EOF"
-
-  .:/++++/:.    .:/+++/:. .-------.`    `.-:::--.`                    
-`/+++:---/+++. -++/..-:-  .::-...:::  `-::-....-.                     
-/++/      -+++`-+++-.`    .::.``.::-  :::.                            
-+++-      `+++. .:/++++:` .::----:-. `:::`                            
-:+++.    `/++/  ``  `/++: .::.   -::. -::-`    `                      
- -+++//:/+++:` -++:::+++. .::----::-`  .-::----:-`                    
-  `.-://::.`   `.::/::-`  `.......`     ``.---..`                     
-                                                                      
-                ``.```                                                
-            `:+ssssssso:.                                             
-/o++++++` `/yyo+++-`.-/sho.   `:+ooo+-   ./oooo/.   `//`  .//////:-`  
-dh...... `sh+/+/:.`     :hh- .hy-.../y- :ho...-os`  .oo.  :oo---:/oo/`
-dh       od+/o-          -dy .hy.`   `  /d+.    `   .oo.  :oo     .oo/
-dhooooo- yd.--            hd. .+osso/-   :ooso+:.   .oo.  :oo      /oo
-dh`````` od/             .dh`    ``-+ho    ``.-sh:  .oo.  :oo     `+o/
-dh       `yh:           -yh: `-`   `-dy ..`   `+d/  .oo.  :oo-..-:+o/`
-ys        `ohy/.`    .:ohy.  -ossssso/` :ossssso:   .++`  -+++++//:.  
-            ./syhyyyhys++yoo:`  ````       ```                        
-               ``...``   /dddh/`                                      
-                          .ohddh+                                     
-                            `+hho                                     
-
-================================================================================
-EOF
+show_splash
 display_version
 echo
 echo "FossID API Endpoint: ${url}"
-echo "username: ${username}"
+echo "Username: ${username}"
 echo "Project Name: ${pname}"
 echo "Scan Name: ${sname}"
 echo "Git URL: ${git_url}"
@@ -58,7 +33,6 @@ echo "Git branch: ${git_branch}"
 echo "*Target Path (Filesystem): ${path}"
 echo "*Trust all certificates: ${trustcert}"
 echo "================================================================================"
-
 create_project
 
 if [[ ! -z ${git_url} ]]; then
@@ -91,7 +65,7 @@ echo "(INFO) Finished."
 
 function create_project()
 {
-	curl --connect-timeout ${timeout} -s${secureoption} POST \
+	curl --connect-timeout ${timeout} ${proxy} -s${secureoption} POST \
 		-H "Content-Type: application/json" \
 		-d "$(cat <<EOT
 {
@@ -105,7 +79,7 @@ EOT
 
 function create_scan()
 {
-	curl --connect-timeout ${timeout} -s${secureoption} POST \
+	curl --connect-timeout ${timeout} ${proxy} -s${secureoption} POST \
 		-H "Content-Type: application/json" \
 		-d "$(cat <<EOT
 {
@@ -119,7 +93,7 @@ EOT
 }
 
 function create_scan_from_git() {
-	curl --connect-timeout ${timeout} -s${secureoption} POST \
+	curl --connect-timeout ${timeout} ${proxy} -s${secureoption} POST \
 		-H "Content-Type: application/json" \
 		-d "$(cat <<EOT
 {
@@ -133,7 +107,7 @@ EOT
 }
 
 function download_from_git() {
-	curl --connect-timeout ${timeout} -${secureoption}X POST \
+	curl --progress-bar --connect-timeout ${timeout} ${proxy} -${secureoption}X POST \
 		-H "Content-Type: application/json" \
 		-d "$(cat <<EOT
 
@@ -148,7 +122,7 @@ EOT
 }
 
 function run_scan() {
-	curl --connect-timeout ${timeout} -s${secureoption} POST \
+	curl --connect-timeout ${timeout} ${proxy} -s${secureoption} POST \
 		-H "Content-Type: application/json" \
 		-d "$(cat <<EOT
 {
@@ -161,7 +135,7 @@ EOT
 }
 
 function get_scan_status() {
-	curl --connect-timeout ${timeout} -s${secureoption} POST \
+	curl --connect-timeout ${timeout} ${proxy} -s${secureoption} POST \
 		-H "Content-Type: application/json" \
 		-d "$(cat <<EOT
 {
@@ -175,7 +149,7 @@ EOT
 }
 
 function get_scan_progress() {
-	curl --connect-timeout ${timeout} -s${secureoption} POST \
+	curl --connect-timeout ${timeout} ${proxy} -s${secureoption} POST \
 		-H "Content-Type: application/json" \
 		-d "$(cat <<EOT
 {
@@ -189,7 +163,7 @@ EOT
 }
 
 function get_finished_information() {
-	curl --connect-timeout ${timeout} -s${secureoption} POST \
+	curl --connect-timeout ${timeout} ${proxy} -s${secureoption} POST \
 		-H "Content-Type: application/json" \
 		-d "$(cat <<EOT
 {
@@ -202,6 +176,35 @@ EOT
 	return
 }
 
+show_splash() {
+		cat << "EOF"
+
+  .:/++++/:.    .:/+++/:. .-------.`    `.-:::--.`                    
+`/+++:---/+++. -++/..-:-  .::-...:::  `-::-....-.                     
+/++/      -+++`-+++-.`    .::.``.::-  :::.                            
++++-      `+++. .:/++++:` .::----:-. `:::`                            
+:+++.    `/++/  ``  `/++: .::.   -::. -::-`    `                      
+ -+++//:/+++:` -++:::+++. .::----::-`  .-::----:-`                    
+  `.-://::.`   `.::/::-`  `.......`     ``.---..`                     
+                                                                      
+                ``.```                                                
+            `:+ssssssso:.                                             
+/o++++++` `/yyo+++-`.-/sho.   `:+ooo+-   ./oooo/.   `//`  .//////:-`  
+dh...... `sh+/+/:.`     :hh- .hy-.../y- :ho...-os`  .oo.  :oo---:/oo/`
+dh       od+/o-          -dy .hy.`   `  /d+.    `   .oo.  :oo     .oo/
+dhooooo- yd.--            hd. .+osso/-   :ooso+:.   .oo.  :oo      /oo
+dh`````` od/             .dh`    ``-+ho    ``.-sh:  .oo.  :oo     `+o/
+dh       `yh:           -yh: `-`   `-dy ..`   `+d/  .oo.  :oo-..-:+o/`
+ys        `ohy/.`    .:ohy.  -ossssso/` :ossssso:   .++`  -+++++//:.  
+            ./syhyyyhys++yoo:`  ````       ```                        
+               ``...``   /dddh/`                                      
+                          .ohddh+                                     
+                            `+hho                                     
+
+================================================================================
+EOF
+}
+
 display_version() {
 	echo "FossID GIT Integration Script version ${version}"
 }
@@ -211,7 +214,7 @@ display_help() {
     echo
     echo "	[!] At least 7 (or 8) properties are required depending on the option."
     echo
-    echo "	--fossid.scheme				: (Required) http or https"
+    echo "	--fossid.scheme				: (Required) protocol (http or https)"
     echo "	--fossid.host				: (Required) hostname of FossID webserver"
     echo "	--fossid.username			: (Required) FossID username"
     echo "	--fossid.apikey				: (Required) FossID apikey"
@@ -219,9 +222,16 @@ display_help() {
     echo "	--fossid.scan.name			: (Required) name for the FossID scan"
     echo "	--fossid.git.url 			: git repository url"
     echo "	--fossid.git.branch 			: branch name of git repository"
-    echo "	--fossid.filesystem.path 		: (Optional) specific path in the FossID server's file system for scanning."
-    echo "	--fossid.trust.cert 			: (Advanced) Trust self-signed certificates (true/false)"
-    echo "	--fossid.timeout 			: (Advanced) set operation timeout"
+    echo "	--fossid.filesystem.path 		: (Optional) target path in the FossID server's file system"
+    echo
+    echo "	(Advanced)"
+    echo "	--fossid.trust.cert 			: Trust self-signed certificates (true/false)"
+    echo "	--fossid.timeout 			: set operation timeout (default:0 - unlimited)"
+    echo "	--fossid.proxy.scheme 			: set proxy protocol (http or https)"
+    echo "	--fossid.proxy.host 			: set proxy host for connnection"
+    echo "	--fossid.proxy.port 			: set proxy port"
+    echo "	--fossid.proxy.username 		: set proxy username"
+    echo "	--fossid.proxy.password 		: set proxy password"
     echo
     exit 0
 }
@@ -274,12 +284,29 @@ else
 					timeout="${1#*=}"
 				fi
 				;;
+			--fossid.proxy.scheme=*)
+				proxyscheme="${1#*=}"
+				;;
+			--fossid.proxy.host=*)
+				proxyhost="${1#*=}"
+				;;
+			--fossid.proxy.port=*)
+				proxyport="${1#*=}"
+				;;
+			--fossid.proxy.username=*)
+				proxyusername="${1#*=}"
+				;;
+			--fossid.proxy.password=*)
+				proxypassword="${1#*=}"
+				;;
 			-h | --help)
 				display_help
 				;;
 			-v | --version)
+				show_splash
 				display_version
-				echo "https://github.com/junsulee/fossid-git"
+				echo "> https://github.com/junsulee/fossid-git"
+				echo "> License: GNU General Public License v2.0 or later"
 				exit 0
 				;;
 			-* | --*)
@@ -295,4 +322,9 @@ else
 	done
 fi
 url="${scheme}""://""${host}""/webapp/api.php"
+if [[ -n $proxyscheme && $proxyuser && proxypassword && proxyhost && proxyport ]]; then
+	proxy="-proxy ""${proxyscheme}""://""${proxyuser}"":""${proxypassword}""@""${proxyhost}"":""${proxyport}"
+else
+	proxy=""
+fi
 main
