@@ -1,5 +1,5 @@
 # fossid-git
-### FossID GIT Integration Script v0.9.3 (Beta)
+### FossID GIT Integration Script v0.9.4 (Beta)
 A lightweight script that helps to integrate the FossID with various git-based CI/CD environments.
 
 ## Prerequisites
@@ -34,10 +34,18 @@ yum install jq
 --fossid.git.url 			: git repository url
 --fossid.git.branch 			: branch name of git repository
 --fossid.filesystem.path 		: (Optional) target path in the FossID server's file system
---fossid.trust.cert 			: (Advanced) Trust self-signed certificates (true/false)
---fossid.timeout 			: (Advanced) set operation timeout
+(Advanced)
+--fossid.trust.cert 			: Trust self-signed certificates (true/false)
+--fossid.timeout 			: set operation timeout (default:0 - unlimited)
+--fossid.proxy.scheme 			: set proxy protocol (http or https)"
+--fossid.proxy.host 			: set proxy host for connnection"
+--fossid.proxy.port 			: set proxy port"
+--fossid.proxy.username 		: set proxy username"
+--fossid.proxy.password 		: set proxy password"
 ```
 ## Release Note
+### v0.9.4
+- support for proxy connection, minor bug fixed
 ### v0.9.3
 - support for trust certificate option, help menu added
 ### v0.9.2
